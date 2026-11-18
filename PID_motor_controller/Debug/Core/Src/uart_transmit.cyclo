@@ -1,0 +1,2 @@
+../Core/Src/uart_transmit.c:13:6:uart_transmit	1
+../Core/Src/uart_transmit.c:21:6:uart_end	1
