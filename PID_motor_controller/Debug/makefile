@@ -57,8 +57,8 @@ all: main-build
 main-build: PID_motor_controller.elf secondary-outputs
 
 # Tool invocations
-PID_motor_controller.elf PID_motor_controller.map: $(OBJS) $(USER_OBJS) C:\Users\blanc\OneDrive\ -\ Instituto\ Tecnologico\ y\ de\ Estudios\ Superiores\ de\ Monterrey\STM32\PID_motor_controller\STM32F411RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "PID_motor_controller.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\blanc\OneDrive - Instituto Tecnologico y de Estudios Superiores de Monterrey\STM32\PID_motor_controller\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="PID_motor_controller.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+PID_motor_controller.elf PID_motor_controller.map: $(OBJS) $(USER_OBJS) C:\Users\blanc\OneDrive\ -\ Instituto\ Tecnologico\ y\ de\ Estudios\ Superiores\ de\ Monterrey\GitHub\PID_motor_controller\PID_motor_controller\STM32F411RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "PID_motor_controller.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\blanc\OneDrive - Instituto Tecnologico y de Estudios Superiores de Monterrey\GitHub\PID_motor_controller\PID_motor_controller\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="PID_motor_controller.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

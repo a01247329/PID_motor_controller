@@ -3,7 +3,7 @@ clear; clc; close all;
 %% Parametros
 port  = "COM3";
 Ts    = 0.01;      % periodo de muestreo [s] (period/1000 del firmware)
-ppr   = 85;       % pulsos por revolucion
+ppr   = 210;       % pulsos por revolucion
 % %ESCALON
 tStep = 1.0;       % instante del escalon [s] (T_STEP_MS/1000 del firmware)
 % tEnd  = 3.0;       % fin del experimento [s]: MATLAB corta aqui aunque no llegue END
