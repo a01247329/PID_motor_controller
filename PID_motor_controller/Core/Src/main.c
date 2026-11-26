@@ -25,6 +25,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "rpm_counter.h"
+#include "escalon.h"
+#include "prbs9.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,6 +50,8 @@
 volatile int pulse_count;
 int duty_cycle;
 int ARR = 250 - 1;
+uint32_t current_time;
+uint8_t finished = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -104,6 +108,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  finished = 0;
 	  rpm_counter();
   }
   /* USER CODE END 3 */

@@ -36,6 +36,8 @@ extern int duty_cycle;
 extern int ARR;
 extern float mtr_rpm_real;
 extern float mtr_rpm_modelo;
+extern uint32_t current_time;
+extern uint8_t finished;
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
