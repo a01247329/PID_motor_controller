@@ -11,10 +11,11 @@
 #include "uart_transmit.h"
 #include "escalon.h"
 #include "prbs9.h"
+#include "pid.h"
 
-uint8_t prueba = 1;
+uint8_t prueba = 2;
 uint32_t start = 0;
-uint32_t period = 5;
+uint32_t period = 10;
 
 void rpm_counter(void)
 {
@@ -45,12 +46,14 @@ void rpm_counter(void)
 	if (prueba == 1)
 	{
 		paso_escalon();
+		//pid();
 		__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, ARR * duty_cycle / 100);
 	}
 
 	else if (prueba == 2)
 	{
 		prbs9();
+		//pid();
 		__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, ARR * duty_cycle / 100);
 	}
 

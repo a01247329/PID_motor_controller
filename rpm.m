@@ -2,16 +2,16 @@ clear; clc; close all;
 
 %% Parametros
 port  = "COM3";
-Ts    = 0.005;      % periodo de muestreo [s] (period/1000 del firmware)
-ppr   = 210;       % pulsos por revolucion
-%ESCALON
-tStep = 1.0;       % instante del escalon [s] (T_STEP_MS/1000 del firmware)
-tEnd  = 3.0;       % fin del experimento [s]: MATLAB corta aqui aunque no llegue END
-% %PRBS9
-% tStart = 1.0;       
-% Tb     = 0.1;                % duracion de un bit [s]    (T_BIT_MS/1000)
-% Nprbs  = 511;                % longitud de la PRBS9
-% tEnd   = tStart + Nprbs*Tb;  % fin del experimento [s]
+Ts    = 0.01;      % periodo de muestreo [s] (period/1000 del firmware)
+ppr   = 200;       % pulsos por revolucion
+% %ESCALON
+% tStep = 1.0;       % instante del escalon [s] (T_STEP_MS/1000 del firmware)
+% tEnd  = 3.0;       % fin del experimento [s]: MATLAB corta aqui aunque no llegue END
+%PRBS9
+tStart = 1.0;       
+Tb     = 0.1;                % duracion de un bit [s]    (T_BIT_MS/1000)
+Nprbs  = 511;                % longitud de la PRBS9
+tEnd   = tStart + Nprbs*Tb;  % fin del experimento [s]
 
 
 %% Adquisicion
@@ -24,16 +24,16 @@ disp("Presiona RESET en la placa para iniciar el escalon...");
 data = [];
 tAcq = tic;
 while true
-    %ESCALON
-    if toc(tAcq) > 30                        % limite de seguridad
-        warning('Se supero el tiempo maximo de adquisicion.');
-        break;
-    end
-    % %PRBS9
-    % if toc(tAcq) > tEnd + 15                 % limite de seguridad
+    % %ESCALON
+    % if toc(tAcq) > 30                        % limite de seguridad
     %     warning('Se supero el tiempo maximo de adquisicion.');
     %     break;
     % end
+    %PRBS9
+    if toc(tAcq) > tEnd + 15                 % limite de seguridad
+        warning('Se supero el tiempo maximo de adquisicion.');
+        break;
+    end
 
     raw = readline(s);
     if isempty(raw)                          % timeout: no llegan datos
@@ -58,10 +58,10 @@ while true
     end
 
     data(end+1,:) = v';
-    %ESCALON
-    if mod(size(data,1), 50) == 0
-    % %PRBS9
-    % if mod(size(data,1), 100) == 0
+    % %ESCALON
+    % if mod(size(data,1), 50) == 0
+    %PRBS9
+    if mod(size(data,1), 100) == 0
         fprintf('t = %.2f s | duty = %g %% | pulsos = %g\n', v(1)/1000, v(2), v(3));
     end
     if v(1)/1000 >= tEnd, break; end         % fin del experimento
@@ -72,10 +72,10 @@ if isempty(data)
     error('No se capturo el inicio del experimento. Corre el script y presiona RESET cuando aparezca el mensaje.');
 end
 
-%ESCALON
-save("escalon.mat", "data");
-% %PRBS9
-% save("prbs.mat", "data");
+% %ESCALON
+% save("escalon.mat", "data");
+%PRBS9
+save("prbs.mat", "data");
 
 %% Limpieza de datos
 data = data(~any(isnan(data),2), :);
@@ -83,54 +83,54 @@ t = data(:,1)/1000;                  % s
 u = data(:,2);                       % duty [%]
 y = data(:,3) * 60 / (Ts*ppr);       % RPM
 
-%ESCALON
-%% Modelo de primer orden: y = K*U*(1 - exp(-(t-tStep)/tau))
-Ustep = max(u);
-n20   = max(round(0.2*numel(y)), 1);
-yss   = mean(y(end-n20+1:end));
-
-if yss <= 0
-    error('yss = 0: el motor no giro o pulse_count quedo en 0. Revisa los datos con plot(t,y).');
-end
-
-m  = t >= tStep;
-K  = yss / Ustep;
-
-% tau: tiempo en alcanzar el 63.2 % de yss despues del escalon
-ys  = movmean(y, 3);
-idx = find(ys >= 0.632*yss & t > tStep, 1);
-if isempty(idx)
-    error('La salida nunca alcanzo el 63.2 %% de yss.');
-end
-tau = max(t(idx) - tStep, Ts);               % evita tau = 0
-
-% %PRBS9
-% %% Identificacion por minimos cuadrados (ARX de primer orden)
-% %   y[k] = a*y[k-1] + b0*u[k] + b1*u[k-1]
-% % Se usan solo las muestras con la PRBS aplicada.
-% k = find(t >= tStart);
-% k = k(k >= 2);
+% %ESCALON
+% %% Modelo de primer orden: y = K*U*(1 - exp(-(t-tStep)/tau))
+% Ustep = max(u);
+% n20   = max(round(0.2*numel(y)), 1);
+% yss   = mean(y(end-n20+1:end));
 % 
-% Phi   = [y(k-1), u(k), u(k-1)];      % regresores
-% theta = Phi \ y(k);                  % solucion de minimos cuadrados
-% a  = theta(1);
-% b0 = theta(2);
-% b1 = theta(3);
-% 
-% if a <= 0 || a >= 1
-%     error('Polo discreto a = %.3f fuera de (0,1): no se puede obtener tau. Revisa los datos.', a);
+% if yss <= 0
+%     error('yss = 0: el motor no giro o pulse_count quedo en 0. Revisa los datos con plot(t,y).');
 % end
 % 
-% K   = (b0 + b1) / (1 - a);           % ganancia estatica [RPM/%]
-% tau = -Ts / log(a);                  % constante de tiempo [s]
+% m  = t >= tStep;
+% K  = yss / Ustep;
 % 
+% % tau: tiempo en alcanzar el 63.2 % de yss despues del escalon
+% ys  = movmean(y, 3);
+% idx = find(ys >= 0.632*yss & t > tStep, 1);
+% if isempty(idx)
+%     error('La salida nunca alcanzo el 63.2 %% de yss.');
+% end
+% tau = max(t(idx) - tStep, Ts);               % evita tau = 0
+
+%PRBS9
+%% Identificacion por minimos cuadrados (ARX de primer orden)
+%   y[k] = a*y[k-1] + b0*u[k] + b1*u[k-1]
+% Se usan solo las muestras con la PRBS aplicada.
+k = find(t >= tStart);
+k = k(k >= 2);
+
+Phi   = [y(k-1), u(k), u(k-1)];      % regresores
+theta = Phi \ y(k);                  % solucion de minimos cuadrados
+a  = theta(1);
+b0 = theta(2);
+b1 = theta(3);
+
+if a <= 0 || a >= 1
+    error('Polo discreto a = %.3f fuera de (0,1): no se puede obtener tau. Revisa los datos.', a);
+end
+
+K   = (b0 + b1) / (1 - a);           % ganancia estatica [RPM/%]
+tau = -Ts / log(a);                  % constante de tiempo [s]
+
 ym    = zeros(size(t));                      % RPM = 0 antes del escalon
-%ESCALON
-ym(m) = K*Ustep*(1 - exp(-(t(m) - tStep)/tau));
-% %PRBS9
-% for i = 2:numel(t)
-%     ym(i) = a*ym(i-1) + b0*u(i) + b1*u(i-1);
-% end
+% %ESCALON
+% ym(m) = K*Ustep*(1 - exp(-(t(m) - tStep)/tau));
+%PRBS9
+for i = 2:numel(t)
+    ym(i) = a*ym(i-1) + b0*u(i) + b1*u(i-1);
+end
 
 e    = y - ym;                                        % error [RPM]
 fit  = 100*(1 - norm(y - ym)/norm(y - mean(y)));      % NRMSE fit [%]

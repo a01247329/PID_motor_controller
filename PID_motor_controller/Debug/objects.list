@@ -1,6 +1,7 @@
 "./Core/Src/escalon.o"
 "./Core/Src/gpio.o"
 "./Core/Src/main.o"
+"./Core/Src/pid.o"
 "./Core/Src/prbs9.o"
 "./Core/Src/pwm_generator.o"
 "./Core/Src/rpm_counter.o"

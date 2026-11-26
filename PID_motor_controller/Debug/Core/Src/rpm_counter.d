@@ -29,7 +29,7 @@ Core/Src/rpm_counter.o: ../Core/Src/rpm_counter.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/main.h ../Core/Inc/uart_transmit.h ../Core/Inc/usart.h \
- ../Core/Inc/escalon.h ../Core/Inc/prbs9.h
+ ../Core/Inc/escalon.h ../Core/Inc/prbs9.h ../Core/Inc/pid.h
 ../Core/Inc/rpm_counter.h:
 ../Core/Inc/tim.h:
 ../Core/Inc/main.h:
@@ -66,3 +66,4 @@ Core/Src/rpm_counter.o: ../Core/Src/rpm_counter.c \
 ../Core/Inc/usart.h:
 ../Core/Inc/escalon.h:
 ../Core/Inc/prbs9.h:
+../Core/Inc/pid.h:
